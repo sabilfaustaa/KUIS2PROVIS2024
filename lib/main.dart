@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kuis2provis2024/providers/food_list_provider.dart';
 import 'providers/auth_provider.dart';
 import 'screens/cart_screen.dart';
 import 'screens/food_detail_screen.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => AuthProvider()),
           ChangeNotifierProvider(create: (_) => CartProvider()),
           ChangeNotifierProvider(create: (_) => OrderStatusProvider()),
+          ChangeNotifierProvider(create: (_) => FoodListProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

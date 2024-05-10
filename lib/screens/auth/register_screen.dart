@@ -67,14 +67,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _usernameController,
                   decoration: InputDecoration(
                     labelText: "Username",
-                    hintText: "Full Name",
+                    hintText: "Username",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Username is required";
+                      return "Username wajib diisi";
                     }
                     return null;
                   },
@@ -103,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Password is required";
+                      return "Password wajib diisi";
                     }
                     return null;
                   },
@@ -113,7 +113,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _confirmPasswordController,
                   obscureText: !_isConfirmPasswordVisible,
                   decoration: InputDecoration(
-                    labelText: "Confirm Password",
+                    labelText: "Konfirmasi Password",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
@@ -133,9 +133,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Confirm Password is required";
+                      return "Konfirmasi Password wajib diisi";
                     } else if (value != _passwordController.text) {
-                      return "Passwords do not match";
+                      return "Password tidak sesuai";
                     }
                     return null;
                   },

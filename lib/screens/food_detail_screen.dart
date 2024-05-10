@@ -36,7 +36,7 @@ class FoodDetailScreen extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                food['img_name'],
+                '${food['img_name']}',
                 fit: BoxFit.cover,
                 height: 250,
               ),
@@ -56,7 +56,7 @@ class FoodDetailScreen extends StatelessWidget {
             SizedBox(height: 16),
             // Food Price
             Text(
-              "${food['price']}",
+              "Rp. ${food['price']}",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
