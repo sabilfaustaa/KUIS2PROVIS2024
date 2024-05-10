@@ -33,4 +33,24 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> register(String username, String password) async {
+    try {
+      errorMessage = null;
+      final response = await _apiService.post('/users/', {
+        'username': username,
+        'password': password,
+      });
+
+      if (response.containsKey('id') && response.containsKey('username')) {
+        // Registration successful
+        notifyListeners();
+      } else {
+        throw Exception(response['detail']);
+      }
+    } catch (e) {
+      errorMessage = " ${e.toString()}";
+      notifyListeners();
+    }
+  }
 }
