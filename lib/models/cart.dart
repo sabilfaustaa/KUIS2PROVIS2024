@@ -14,4 +14,13 @@ class Cart {
   });
 
   double get totalPrice => price * quantity;
+
+  factory Cart.fromJson(Map<String, dynamic> json) {
+    return Cart(
+      id: json['id'],
+      title: json['title'],
+      price: json['price'],
+      imgName: json['imgName'],
+    );
+  }
 }

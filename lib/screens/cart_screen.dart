@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/cart.dart';
 import '../providers/cart_provider.dart';
+import '../models/cart.dart';
 
 class CartScreen extends StatelessWidget {
-  final double deliveryFee = 3.5;
+  final double deliveryFee = 5000;
 
   @override
   Widget build(BuildContext context) {
-    final cartProvider = Provider.of<CartProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
     final double subtotal = cartProvider.subtotal;
     final double total = subtotal + deliveryFee;
 
@@ -18,101 +18,116 @@ class CartScreen extends StatelessWidget {
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
         title: Text(
-          "Cart",
+          "Keranjang",
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            icon: Icon(Icons.delete_forever),
+            onPressed: () => _confirmClearCart(context, cartProvider),
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Expanded(
-            //   child: ListView.builder(
-            //     itemCount: cartProvider.Carts.length,
-            //     itemBuilder: (context, index) {
-            //       final Cart = cartProvider.Carts[index];
-            //       return _buildCart(context, Cart, cartProvider);
-            //     },
-            //   ),
-            // ),
-            SizedBox(height: 16),
-            // Subtotal, Delivery, Total
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: FutureBuilder<void>(
+        future: cartProvider.fetchCartItems(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          return Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
               children: [
-                Text("Subtotal"),
-                Text("\$${subtotal.toStringAsFixed(2)}"),
-              ],
-            ),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Delivery"),
-                Text("\$${deliveryFee.toStringAsFixed(2)}"),
-              ],
-            ),
-            Divider(thickness: 1, height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Total", style: TextStyle(fontWeight: FontWeight.bold)),
-                Text("\$${total.toStringAsFixed(2)}",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ],
-            ),
-            SizedBox(height: 16),
-            // Checkout Button
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/food_list');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightGreen[600],
-                padding: EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  "Bayar",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                Expanded(
+                  child: Consumer<CartProvider>(
+                    builder: (context, cartProvider, _) {
+                      if (cartProvider.cartItems.isEmpty) {
+                        return Center(
+                          child: Text("Keranjang kosong"),
+                        );
+                      }
+
+                      return ListView.builder(
+                        itemCount: cartProvider.cartItems.length,
+                        itemBuilder: (context, index) {
+                          final cartItem = cartProvider.cartItems[index];
+                          return _buildCartItem(
+                              context, cartItem, cartProvider);
+                        },
+                      );
+                    },
                   ),
                 ),
-              ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Subtotal"),
+                    Text("\Rp. ${subtotal.toStringAsFixed(2)}"),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Delivery"),
+                    Text("\Rp. ${deliveryFee.toStringAsFixed(2)}"),
+                  ],
+                ),
+                Divider(thickness: 1, height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Total",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text("\Rp. ${total.toStringAsFixed(2)}",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => Navigator.pushNamed(context, '/checkout'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.lightGreen[600],
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Bayar",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildCart(
-      BuildContext context, Cart Cart, CartProvider cartProvider) {
+  Widget _buildCartItem(
+      BuildContext context, Cart cartItem, CartProvider cartProvider) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
         child: Row(
           children: [
             // Food Image
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.asset(
-                Cart.imgName,
+                '${cartItem.imgName}',
                 width: 80,
                 height: 80,
                 fit: BoxFit.cover,
@@ -124,35 +139,81 @@ class CartScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(Cart.title,
+                  Text(cartItem.title,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
-                  Text("\$${Cart.price.toStringAsFixed(2)}"),
+                  Text("\Rp. ${cartItem.price.toStringAsFixed(2)}"),
                 ],
               ),
             ),
             // Quantity Controls
             Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.remove, color: Colors.green[600]),
-                  onPressed: () {
-                    cartProvider.removeItem(Cart);
-                  },
-                ),
-                Text("${Cart.quantity}",
+                Text("Qty: ${cartItem.quantity}",
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 IconButton(
-                  icon: Icon(Icons.add, color: Colors.green[600]),
-                  onPressed: () {
-                    cartProvider.addItem(Cart);
-                  },
+                  icon: Icon(Icons.delete, color: Colors.red[300]),
+                  onPressed: () =>
+                      _confirmDeleteItem(context, cartItem.id, cartProvider),
                 ),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _confirmDeleteItem(
+      BuildContext context, int cartId, CartProvider cartProvider) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Hapus Item"),
+          content: Text(
+              "Apakah Anda yakin ingin menghapus item ini dari keranjang?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Tidak"),
+            ),
+            TextButton(
+              onPressed: () async {
+                await cartProvider.deleteCartItem(cartId);
+                Navigator.of(context).pop();
+              },
+              child: Text("Ya"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _confirmClearCart(BuildContext context, CartProvider cartProvider) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Hapus Semua Item"),
+          content: Text(
+              "Apakah Anda yakin ingin menghapus semua item dari keranjang?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Tidak"),
+            ),
+            TextButton(
+              onPressed: () async {
+                await cartProvider.clearCart();
+                Navigator.of(context).pop();
+              },
+              child: Text("Ya"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

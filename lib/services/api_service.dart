@@ -50,4 +50,84 @@ class ApiService {
           "Failed to load items. Status code: ${response.statusCode}");
     }
   }
+
+  Future<Map<String, dynamic>> addItemToCart(
+      int itemId, int userId, int quantity) async {
+    final token = await SharedPreferencesHelper.getAccessToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/carts/'),
+      headers: headers,
+      body: jsonEncode({
+        'item_id': itemId,
+        'user_id': userId,
+        'quantity': quantity,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception(
+          "Failed to add item to cart. Status code: ${response.statusCode}");
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCartItems(int userId,
+      {int skip = 0, int limit = 100}) async {
+    final token = await SharedPreferencesHelper.getAccessToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/carts/$userId?skip=$skip&limit=$limit'),
+      headers: headers,
+    );
+
+    if (response.statusCode == 200) {
+      return List<Map<String, dynamic>>.from(jsonDecode(response.body));
+    } else {
+      throw Exception("Failed to load cart items");
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAllItems() async {
+    return await getItems();
+  }
+
+  Future<bool> deleteCartItem(int cartId) async {
+    final token = await SharedPreferencesHelper.getAccessToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/carts/$cartId'),
+      headers: headers,
+    );
+
+    return response.statusCode == 200;
+  }
+
+  Future<bool> clearCartItems(int userId) async {
+    final token = await SharedPreferencesHelper.getAccessToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/clear_whole_carts_by_userid/$userId'),
+      headers: headers,
+    );
+
+    return response.statusCode == 200;
+  }
 }
