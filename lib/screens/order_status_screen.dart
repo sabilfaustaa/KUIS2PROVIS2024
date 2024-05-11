@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/order_status_provider.dart';
-// import '../providers/cart_provider.dart';
+import '../providers/cart_provider.dart';
 import '../helpers/shared_preferences_helper.dart';
 
 class OrderStatusScreen extends StatelessWidget {
@@ -19,7 +19,7 @@ class OrderStatusScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final orderStatusProvider =
         Provider.of<OrderStatusProvider>(context, listen: false);
-    // final cartProvider = Provider.of<CartProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -86,8 +86,6 @@ class OrderStatusScreen extends StatelessWidget {
                           await provider.updateStatus(
                               '/set_status_penjual_terima/${await SharedPreferencesHelper.getUserId()}');
 
-                          // cartProvider.clearCart();
-
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text("Pesanan diterima!"),
@@ -115,7 +113,7 @@ class OrderStatusScreen extends StatelessWidget {
                         onPressed: () async {
                           await provider.updateStatus(
                               '/set_status_pesanan_ditolak/${await SharedPreferencesHelper.getUserId()}');
-                          // cartProvider.clearCart();
+                          cartProvider.clearCart();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text("Pesanan ditolak."),
@@ -194,6 +192,8 @@ class OrderStatusScreen extends StatelessWidget {
                         onPressed: () async {
                           await provider.updateStatus(
                               '/set_status_diterima/${await SharedPreferencesHelper.getUserId()}');
+                          cartProvider.clearCart();
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text("Pesanan selesai."),
