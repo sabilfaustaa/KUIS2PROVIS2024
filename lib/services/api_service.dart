@@ -30,24 +30,24 @@ class ApiService {
   }
 
   Future<List<Map<String, dynamic>>> getItems(
-      {int skip = 0, int limit = 100}) async {
+      {String keyword = '', int skip = 0, int limit = 100}) async {
     final token = await SharedPreferencesHelper.getAccessToken();
     final headers = {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
     };
 
-    final response = await http.get(
-      Uri.parse('$baseUrl/items?skip=$skip&limit=$limit'),
-      headers: headers,
-    );
+    String url = keyword.isEmpty
+        ? '$baseUrl/items?skip=$skip&limit=$limit'
+        : '$baseUrl/search_items/$keyword?skip=$skip&limit=$limit';
+
+    final response = await http.get(Uri.parse(url), headers: headers);
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       return List<Map<String, dynamic>>.from(data);
     } else {
-      throw Exception(
-          "Gagal ambil data tems. Status code: ${response.statusCode}");
+      return [];
     }
   }
 
@@ -168,6 +168,24 @@ class ApiService {
     } else {
       throw Exception(
           "Gagal ambil status terkini. Status code: ${response.statusCode}");
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> searchFoods(String keyword) async {
+    final token = await SharedPreferencesHelper.getAccessToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+
+    var response = await http.get(Uri.parse('$baseUrl/search_items/$keyword'),
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return List<Map<String, dynamic>>.from(data);
+    } else {
+      throw Exception('Gagal Searching');
     }
   }
 }

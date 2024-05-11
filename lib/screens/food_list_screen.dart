@@ -4,8 +4,34 @@ import '../providers/food_list_provider.dart';
 import 'food_detail_screen.dart';
 
 class FoodListScreen extends StatelessWidget {
+  void _showSearchDialog(BuildContext context) {
+    final TextEditingController controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Cari Makanan"),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(hintText: "Masukan keyword"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Provider.of<FoodListProvider>(context, listen: false)
+                  .fetchFoods(keyword: controller.text.trim());
+            },
+            child: Text("Cari"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final foodListProvider = Provider.of<FoodListProvider>(context);
+
     return ChangeNotifierProvider(
       create: (_) => FoodListProvider()..fetchFoods(),
       child: Scaffold(
@@ -16,7 +42,7 @@ class FoodListScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: () {},
+              onPressed: () => _showSearchDialog(context),
             ),
             IconButton(
               icon: Icon(Icons.share),
@@ -29,13 +55,11 @@ class FoodListScreen extends StatelessWidget {
           child: Consumer<FoodListProvider>(
             builder: (context, foodListProvider, child) {
               if (foodListProvider.errorMessage != null) {
-                return Center(
-                  child: Text(foodListProvider.errorMessage!),
-                );
+                return Center(child: Text(foodListProvider.errorMessage!));
               }
 
               if (foodListProvider.foods.isEmpty) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: Text("Tidak ada data yang ditemukan."));
               }
 
               return Column(
@@ -80,31 +104,23 @@ class FoodListScreen extends StatelessWidget {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 16),
                   Expanded(
-                    child: GridView.builder(
-                      itemCount: foodListProvider.foods.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                      ),
-                      itemBuilder: (context, index) {
-                        final food = foodListProvider.foods[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    FoodDetailScreen(food: food),
-                              ),
-                            );
-                          },
-                          child: _buildFoodItem(context, food),
-                        );
-                      },
-                    ),
-                  ),
+                    child: foodListProvider.foods.isEmpty
+                        ? Center(child: CircularProgressIndicator())
+                        : GridView.builder(
+                            itemCount: foodListProvider.foods.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.75,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                            ),
+                            itemBuilder: (context, index) {
+                              final food = foodListProvider.foods[index];
+                              return _buildFoodItem(context, food);
+                            },
+                          ),
+                  )
                 ],
               );
             },
@@ -138,7 +154,7 @@ class FoodListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFoodItem(context, Map<String, dynamic> food) {
+  Widget _buildFoodItem(BuildContext context, Map<String, dynamic> food) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),

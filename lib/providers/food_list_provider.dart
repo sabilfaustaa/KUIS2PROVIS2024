@@ -3,19 +3,19 @@ import '../services/api_service.dart';
 
 class FoodListProvider with ChangeNotifier {
   List<Map<String, dynamic>> _foods = [];
-  final ApiService _apiService = ApiService();
   String? errorMessage;
+
+  ApiService _apiService = ApiService();
 
   List<Map<String, dynamic>> get foods => _foods;
 
-  Future<void> fetchFoods() async {
+  Future<void> fetchFoods({String keyword = ''}) async {
     try {
-      errorMessage = null;
-      _foods = await _apiService.getItems();
-      notifyListeners();
+      _foods = await _apiService.getItems(keyword: keyword);
+      notifyListeners(); // Memastikan ini dipanggil setelah data diupdate
     } catch (e) {
-      errorMessage = "Gagal ambil data makanan: ${e.toString()}";
-      notifyListeners();
+      errorMessage = e.toString();
+      notifyListeners(); // Juga dipanggil saat ada error
     }
   }
 }
