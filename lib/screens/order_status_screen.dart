@@ -11,8 +11,8 @@ class OrderStatusScreen extends StatelessWidget {
     {"status": "sudah_bayar", "label": "Sudah Bayar"},
     {"status": "pesanan_diterima", "label": "Penjual Terima"},
     {"status": "pesanan_ditolak", "label": "Penjual Tolak"},
-    {"status": "diantar", "label": "Diantar"},
-    {"status": "diterima", "label": "Diterima"},
+    {"status": "pesanaan_diantar", "label": "Diantar"},
+    {"status": "pesanan_selesai", "label": "Diterima"},
   ];
 
   @override
@@ -84,7 +84,10 @@ class OrderStatusScreen extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () async {
                           await provider.updateStatus(
-                              '/set_status_pesanan_diterima/${await SharedPreferencesHelper.getUserId()}');
+                              '/set_status_penjual_terima/${await SharedPreferencesHelper.getUserId()}');
+
+                          // cartProvider.clearCart();
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text("Pesanan diterima!"),
@@ -112,7 +115,7 @@ class OrderStatusScreen extends StatelessWidget {
                         onPressed: () async {
                           await provider.updateStatus(
                               '/set_status_pesanan_ditolak/${await SharedPreferencesHelper.getUserId()}');
-                          cartProvider.clearCart();
+                          // cartProvider.clearCart();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text("Pesanan ditolak."),
@@ -135,7 +138,87 @@ class OrderStatusScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ],
+                    ] else if (orderStatusProvider.status ==
+                        "pesanan_ditolak") ...[
+                      ElevatedButton(
+                        onPressed: () async {
+                          Navigator.pushNamed(context, "/food_list");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green[600],
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          "Kembali ke Beranda",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ] else if (orderStatusProvider.status ==
+                        "pesanan_diterima") ...[
+                      ElevatedButton(
+                        onPressed: () async {
+                          await provider.updateStatus(
+                              '/set_status_diantar/${await SharedPreferencesHelper.getUserId()}');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Pesanan dalam perjalanan."),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green[600],
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          "Antar Pesanan",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ] else if (orderStatusProvider.status ==
+                        "pesanaan_diantar") ...[
+                      ElevatedButton(
+                        onPressed: () async {
+                          await provider.updateStatus(
+                              '/set_status_diterima/${await SharedPreferencesHelper.getUserId()}');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Pesanan selesai."),
+                            ),
+                          );
+
+                          Navigator.pushNamed(context, "/order_success");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green[600],
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          "Pesanan Selesai",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ]
                   ],
                 ),
               );

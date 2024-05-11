@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kuis2provis2024/providers/food_list_provider.dart';
+import 'package:kuis2provis2024/screens/order_success.dart';
 import 'providers/auth_provider.dart';
 import 'screens/cart_screen.dart';
 import 'screens/food_detail_screen.dart';
@@ -40,7 +41,8 @@ class MyApp extends StatelessWidget {
             '/food_list': (context) => FoodListScreen(),
             '/food_detail': (context) => FoodDetailScreen(food: {}),
             '/cart': (context) => CartScreen(),
-            '/order_status': (context) => OrderStatusScreen()
+            '/order_status': (context) => OrderStatusScreen(),
+            '/order_success': (context) => OrderSuccessScreen()
           },
         ));
   }
