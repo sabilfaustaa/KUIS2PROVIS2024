@@ -18,7 +18,7 @@ class OrderStatusProvider with ChangeNotifier {
         timestamp = response['status']['timestamp'];
         notifyListeners();
       } catch (e) {
-        errorMessage = "Failed to fetch status: ${e.toString()}";
+        errorMessage = "Gagal fetch status: ${e.toString()}";
         notifyListeners();
       }
     }
@@ -36,7 +36,7 @@ class OrderStatusProvider with ChangeNotifier {
         }
         await fetchStatus();
       } catch (e) {
-        errorMessage = "Failed to update status: ${e.toString()}";
+        errorMessage = "Gagal update status: ${e.toString()}";
         notifyListeners();
       }
     }
@@ -50,7 +50,7 @@ class OrderStatusProvider with ChangeNotifier {
             token: await SharedPreferencesHelper.getAccessToken());
         await fetchStatus();
       } catch (e) {
-        errorMessage = "Failed to make payment: ${e.toString()}";
+        errorMessage = "Gagal pembayaran: ${e.toString()}";
         notifyListeners();
       }
     }

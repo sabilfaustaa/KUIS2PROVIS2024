@@ -33,7 +33,7 @@ class CartProvider with ChangeNotifier {
       _cartItems.add(cartItem);
       notifyListeners();
     } catch (e) {
-      errorMessage = "Failed to add item to cart: ${e.toString()}";
+      errorMessage = "Gagal tambah data cart: ${e.toString()}";
       notifyListeners();
     }
   }
@@ -62,7 +62,7 @@ class CartProvider with ChangeNotifier {
         _cartItems = cartItems;
         notifyListeners();
       } catch (e) {
-        errorMessage = "Failed to fetch cart items: ${e.toString()}";
+        errorMessage = "Gagal ambil data cart: ${e.toString()}";
         notifyListeners();
       }
     }
@@ -87,12 +87,12 @@ class CartProvider with ChangeNotifier {
     int? userId = await SharedPreferencesHelper.getUserId();
     if (userId != null) {
       try {
-        final response = await _apiService.setStatusHarapBayar(userId);
+        await _apiService.setStatusHarapBayar(userId);
 
         _cartItems.clear();
         notifyListeners();
       } catch (e) {
-        errorMessage = "Failed to set status harap bayar: ${e.toString()}";
+        errorMessage = "Gagal set status harap bayar: ${e.toString()}";
         notifyListeners();
       }
     }

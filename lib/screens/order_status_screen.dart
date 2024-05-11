@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/order_status_provider.dart';
-import '../providers/cart_provider.dart';
+// import '../providers/cart_provider.dart';
 import '../helpers/shared_preferences_helper.dart';
 
 class OrderStatusScreen extends StatelessWidget {
@@ -19,7 +19,7 @@ class OrderStatusScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final orderStatusProvider =
         Provider.of<OrderStatusProvider>(context, listen: false);
-    final cartProvider = Provider.of<CartProvider>(context);
+    // final cartProvider = Provider.of<CartProvider>(context);
 
     return Scaffold(
       appBar: AppBar(

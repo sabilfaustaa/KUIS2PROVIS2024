@@ -47,7 +47,7 @@ class ApiService {
       return List<Map<String, dynamic>>.from(data);
     } else {
       throw Exception(
-          "Failed to load items. Status code: ${response.statusCode}");
+          "Gagal ambil data tems. Status code: ${response.statusCode}");
     }
   }
 
@@ -73,7 +73,7 @@ class ApiService {
       return jsonDecode(response.body);
     } else {
       throw Exception(
-          "Failed to add item to cart. Status code: ${response.statusCode}");
+          "Gagal tambah data item ke keranjang. Status code: ${response.statusCode}");
     }
   }
 
@@ -93,7 +93,7 @@ class ApiService {
     if (response.statusCode == 200) {
       return List<Map<String, dynamic>>.from(jsonDecode(response.body));
     } else {
-      throw Exception("Failed to load cart items");
+      throw Exception("Gagal load data keranjang");
     }
   }
 
@@ -147,7 +147,7 @@ class ApiService {
       return jsonDecode(response.body);
     } else {
       throw Exception(
-          "Failed to set status harap bayar. Status code: ${response.statusCode}");
+          "Gagal set status harap bayar. Status code: ${response.statusCode}");
     }
   }
 
@@ -167,7 +167,7 @@ class ApiService {
       return jsonDecode(response.body);
     } else {
       throw Exception(
-          "Failed to get status. Status code: ${response.statusCode}");
+          "Gagal ambil status terkini. Status code: ${response.statusCode}");
     }
   }
 }

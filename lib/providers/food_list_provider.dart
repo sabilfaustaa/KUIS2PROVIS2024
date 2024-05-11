@@ -14,7 +14,7 @@ class FoodListProvider with ChangeNotifier {
       _foods = await _apiService.getItems();
       notifyListeners();
     } catch (e) {
-      errorMessage = "Failed to load foods: ${e.toString()}";
+      errorMessage = "Gagal ambil data makanan: ${e.toString()}";
       notifyListeners();
     }
   }
