@@ -88,7 +88,10 @@ class CartScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/checkout'),
+                  onPressed: () async {
+                    await cartProvider.setStatusHarapBayar();
+                    Navigator.pushNamed(context, '/order_status');
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.lightGreen[600],
                     padding: EdgeInsets.symmetric(vertical: 16),
@@ -123,7 +126,6 @@ class CartScreen extends StatelessWidget {
         padding: EdgeInsets.all(8.0),
         child: Row(
           children: [
-            // Food Image
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.asset(
@@ -134,7 +136,6 @@ class CartScreen extends StatelessWidget {
               ),
             ),
             SizedBox(width: 16),
-            // Food Title and Price
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +147,6 @@ class CartScreen extends StatelessWidget {
                 ],
               ),
             ),
-            // Quantity Controls
             Row(
               children: [
                 Text("Qty: ${cartItem.quantity}",

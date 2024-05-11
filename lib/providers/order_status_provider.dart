@@ -1,35 +1,51 @@
 import 'package:flutter/material.dart';
-import '../models/order_status.dart';
 import '../services/api_service.dart';
+import '../helpers/shared_preferences_helper.dart';
 
 class OrderStatusProvider with ChangeNotifier {
-  OrderStatus _currentStatus = OrderStatus(
-    status: "checkout",
-    description: "Order checkout completed",
-    timestamp: DateTime.now(),
-  );
+  String? status;
+  String? errorMessage;
   final ApiService _apiService = ApiService();
 
-  OrderStatus get currentStatus => _currentStatus;
-
-  void updateStatus(String status, String description) {
-    // Update status di server
-    _apiService.post('/set_status_$status/{user_id}', {});
-
-    _currentStatus = OrderStatus(
-      status: status,
-      description: description,
-      timestamp: DateTime.now(),
-    );
-    notifyListeners();
+  Future<void> fetchStatus() async {
+    int? userId = await SharedPreferencesHelper.getUserId();
+    if (userId != null) {
+      try {
+        final response = await _apiService.getStatus(userId);
+        status = response['status']['status'];
+        notifyListeners();
+      } catch (e) {
+        errorMessage = "Failed to fetch status: ${e.toString()}";
+        notifyListeners();
+      }
+    }
   }
 
-  void resetOrder() {
-    _currentStatus = OrderStatus(
-      status: "checkout",
-      description: "Order checkout completed",
-      timestamp: DateTime.now(),
-    );
-    notifyListeners();
+  Future<void> updateStatus(String endpoint) async {
+    int? userId = await SharedPreferencesHelper.getUserId();
+    if (userId != null) {
+      try {
+        await _apiService.post(endpoint, {},
+            token: await SharedPreferencesHelper.getAccessToken());
+        await fetchStatus();
+      } catch (e) {
+        errorMessage = "Failed to update status: ${e.toString()}";
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> pembayaran() async {
+    int? userId = await SharedPreferencesHelper.getUserId();
+    if (userId != null) {
+      try {
+        await _apiService.post('/pembayaran/$userId', {},
+            token: await SharedPreferencesHelper.getAccessToken());
+        await fetchStatus();
+      } catch (e) {
+        errorMessage = "Failed to make payment: ${e.toString()}";
+        notifyListeners();
+      }
+    }
   }
 }

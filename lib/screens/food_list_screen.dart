@@ -16,15 +16,11 @@ class FoodListScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: () {
-                // Search functionality
-              },
+              onPressed: () {},
             ),
             IconButton(
               icon: Icon(Icons.share),
-              onPressed: () {
-                // Share functionality
-              },
+              onPressed: () {},
             ),
           ],
         ),
@@ -45,7 +41,6 @@ class FoodListScreen extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header Section
                   Text(
                     "BarayaFood Big Diskonn!",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -66,7 +61,6 @@ class FoodListScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 16),
-                  // Rating and Distance Info
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -85,7 +79,6 @@ class FoodListScreen extends StatelessWidget {
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 16),
-                  // Food List
                   Expanded(
                     child: GridView.builder(
                       itemCount: foodListProvider.foods.length,
@@ -117,7 +110,6 @@ class FoodListScreen extends StatelessWidget {
             },
           ),
         ),
-        // Floating Action Button for Menu
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.pushNamed(context, '/cart');
@@ -155,7 +147,6 @@ class FoodListScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Food Image
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
@@ -170,14 +161,11 @@ class FoodListScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Food Title
                 Text(food["title"],
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 4),
-                // Food Price
                 Text("Rp. ${food["price"]}"),
                 SizedBox(height: 8),
-                // Add Button
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(

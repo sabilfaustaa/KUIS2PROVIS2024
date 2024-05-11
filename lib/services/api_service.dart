@@ -130,4 +130,44 @@ class ApiService {
 
     return response.statusCode == 200;
   }
+
+  Future<Map<String, dynamic>> setStatusHarapBayar(int userId) async {
+    final token = await SharedPreferencesHelper.getAccessToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/set_status_harap_bayar/$userId'),
+      headers: headers,
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception(
+          "Failed to set status harap bayar. Status code: ${response.statusCode}");
+    }
+  }
+
+  Future<Map<String, dynamic>> getStatus(int userId) async {
+    final token = await SharedPreferencesHelper.getAccessToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/get_status/$userId'),
+      headers: headers,
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception(
+          "Failed to get status. Status code: ${response.statusCode}");
+    }
+  }
 }

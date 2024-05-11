@@ -19,11 +19,9 @@ class AuthProvider with ChangeNotifier {
         final String token = response['access_token'];
         final int userId = response['user_id'];
 
-        // Simpan token dan user_id ke SharedPreferences
         await SharedPreferencesHelper.saveAccessToken(token);
         await SharedPreferencesHelper.saveUserId(userId);
 
-        // Navigate to the main screen
         notifyListeners();
       } else {
         throw Exception(response['detail']);
@@ -43,7 +41,6 @@ class AuthProvider with ChangeNotifier {
       });
 
       if (response.containsKey('id') && response.containsKey('username')) {
-        // Registration successful
         notifyListeners();
       } else {
         throw Exception(response['detail']);

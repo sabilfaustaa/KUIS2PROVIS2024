@@ -82,4 +82,19 @@ class CartProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> setStatusHarapBayar() async {
+    int? userId = await SharedPreferencesHelper.getUserId();
+    if (userId != null) {
+      try {
+        final response = await _apiService.setStatusHarapBayar(userId);
+
+        _cartItems.clear();
+        notifyListeners();
+      } catch (e) {
+        errorMessage = "Failed to set status harap bayar: ${e.toString()}";
+        notifyListeners();
+      }
+    }
+  }
 }
